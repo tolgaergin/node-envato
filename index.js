@@ -6,10 +6,11 @@ class EnvatoApi {
     this.username = options.username;
     this.token = options.token;
     this.baseUrl = 'https://api.envato.com/';
+    this.baseVersion = 'v1';
   }
 
   prepareUrl(version, url) {
-    return this.baseUrl + (version ? version : 'v1') + '/' + url;
+    return this.baseUrl + (version ? version : this.baseVersion) + '/' + url;
   }
 
   get(options, callback) {
@@ -92,15 +93,6 @@ class EnvatoApi {
       params,
     }, callback);
   }
-
-  // totalItems() {
-  //   return axios.get(URL + '/v1/market/total-items.json', {
-  //     headers: { Authorization: 'Bearer ' + this.token },
-  //   })
-  //   .then(result => result.data)
-  //   .catch(err => console.log(err.response.data));
-  // }
-
 }
 
 module.exports = function (options) {
