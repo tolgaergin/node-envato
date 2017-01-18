@@ -1,27 +1,96 @@
 const axios = require('axios');
-
-const URL = 'https://api.envato.com';
+const querystring = require('querystring');
 
 class EnvatoApi {
   constructor(options) {
     this.username = options.username;
     this.token = options.token;
+    this.baseUrl = 'https://api.envato.com/';
   }
 
-  get(url) {
-    return axios.get(URL + '/v1/market/' + url, {
+  prepareUrl(version, url) {
+    return this.baseUrl + (version ? version : 'v1') + '/' + url;
+  }
+
+  get(options, callback) {
+
+    let url = this.prepareUrl(options.version, options.url);
+
+    if (options.params) {
+      url += '?' + querystring.stringify(options.params);
+    }
+
+    console.log(url);
+
+    axios.get(url, {
       headers: { Authorization: 'Bearer ' + this.token },
     })
-    .then(result => result.data)
-    .catch(err => console.log(err.response.data));
+    .then(result => callback(result.data))
+    .catch(err => callback(err.response.data));
   }
 
-  totalItems() {
-    return this.get('total-items.json');
+  totalItems(callback) {
+    return this.get({
+      url: 'market/total-users.json',
+    }, callback);
   }
 
-  account() {
-    return this.get('private/user/account.json');
+  totalUsers(callback) {
+    return this.get({
+      url: 'market/total-items.json',
+    }, callback);
+  }
+
+  userUsername(callback) {
+    return this.get({
+      url: 'market/private/user/username.json',
+    }, callback);
+  }
+
+  userEmail(callback) {
+    return this.get({
+      url: 'market/private/user/email.json',
+    }, callback);
+  }
+
+  userAccount(callback) {
+    return this.get({
+      url: 'market/private/user/account.json',
+    }, callback);
+  }
+
+  userBadges(params, callback) {
+    return this.get({
+      url: 'market/user-badges:' + params.username + '.json',
+    }, callback);
+  }
+
+  authorItemsBySite(params, callback) {
+    return this.get({
+      url: 'market/user-items-by-site:' + params.username + '.json',
+    }, callback);
+  }
+
+  authorFiles(params, callback) {
+    const { username, site } = params;
+
+    return this.get({
+      url: `market/new-files-from-user:${username},${site}.json`,
+    }, callback);
+  }
+
+  authorEarningsSales(callback) {
+    return this.get({
+      url: 'market/private/user/earnings-and-sales-by-month.json',
+    }, callback);
+  }
+
+  authorStatement(params, callback) {
+    return this.get({
+      url: '/market/user/statement',
+      version: 'v3',
+      params,
+    }, callback);
   }
 
   // totalItems() {
@@ -32,14 +101,6 @@ class EnvatoApi {
   //   .catch(err => console.log(err.response.data));
   // }
 
-  // With callback function
-  // totalItems(callback) {
-  //   axios.get(URL + '/v1/market/total-items.json', {
-  //     headers: { Authorization: 'Bearer ' + this.token },
-  //   })
-  //   .then(result => callback(null, result.data))
-  //   .catch(err => callback(err.response.data));
-  // }
 }
 
 module.exports = function (options) {
