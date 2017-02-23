@@ -1,6 +1,6 @@
-import axios from 'axios';
-import httpAdapter from 'axios/lib/adapters/http';
-import querystring from 'querystring';
+const axios = require('axios');
+const httpAdapter = require('axios/lib/adapters/http');
+const querystring = require('querystring');
 
 // axios settings needed when testing actions
 axios.defaults.host = 'https://api.envato.com';
