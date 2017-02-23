@@ -1,18 +1,15 @@
-// https://github.com/shernshiou/node-uber
-// https://build.envato.com/api/#market_Account
-//
 const envato = require('./index');
 
 const getResult = envato({
-  username: 'teamfox',
-  token: '7S3QE0NGJUr9MwJaLLo0usgjSrS85yLm',
+  username: 'YOUR_USERNAME',
+  token: 'YOUR_TOKEN_CODE',
 });
 
-// getResult.totalItems(function (err, data) {
-//   if (err) { return console.log(err); }
-//
-//   console.log(data);
-// });
+getResult.totalItems(function (err, data) {
+  if (err) { return console.log(err); }
+
+  console.log(data);
+});
 
 // getResult.totalUsers(function (err, data) {
 //   if (err) { return console.log(err); }
@@ -27,6 +24,14 @@ const getResult = envato({
 // });
 
 // getResult.userEmail(function (err, data) {
+//   if (err) { return console.log(err); }
+//
+//   console.log(data);
+// });
+
+// getResult.userDetails({
+//   username: 'teamfox',
+// }, function (err, data) {
 //   if (err) { return console.log(err); }
 //
 //   console.log(data);

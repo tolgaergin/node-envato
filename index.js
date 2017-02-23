@@ -1,5 +1,10 @@
-const axios = require('axios');
-const querystring = require('querystring');
+import axios from 'axios';
+import httpAdapter from 'axios/lib/adapters/http';
+import querystring from 'querystring';
+
+// axios settings needed when testing actions
+axios.defaults.host = 'https://api.envato.com';
+axios.defaults.adapter = httpAdapter;
 
 class EnvatoApi {
   constructor(options) {
@@ -10,7 +15,7 @@ class EnvatoApi {
   }
 
   prepareUrl(version, url) {
-    return this.baseUrl + (version ? version : this.baseVersion) + '/' + url;
+    return this.baseUrl + (version ? version : this.baseVersion) + url;
   }
 
   get(options, callback) {
@@ -21,54 +26,58 @@ class EnvatoApi {
       url += '?' + querystring.stringify(options.params);
     }
 
-    console.log(url);
-
-    axios.get(url, {
+    return axios.get(url, {
       headers: { Authorization: 'Bearer ' + this.token },
     })
-    .then(result => callback(result.data))
-    .catch(err => callback(err.response.data));
+    .then(result => callback(null, result.data))
+    .catch(err => callback(err));
   }
 
   totalItems(callback) {
     return this.get({
-      url: 'market/total-users.json',
+      url: '/market/total-items.json',
     }, callback);
   }
 
   totalUsers(callback) {
     return this.get({
-      url: 'market/total-items.json',
+      url: '/market/total-users.json',
     }, callback);
   }
 
   userUsername(callback) {
     return this.get({
-      url: 'market/private/user/username.json',
+      url: '/market/private/user/username.json',
     }, callback);
   }
 
   userEmail(callback) {
     return this.get({
-      url: 'market/private/user/email.json',
+      url: '/market/private/user/email.json',
+    }, callback);
+  }
+
+  userDetails(params, callback) {
+    return this.get({
+      url: '/market/user:' + params.username + '.json',
     }, callback);
   }
 
   userAccount(callback) {
     return this.get({
-      url: 'market/private/user/account.json',
+      url: '/market/private/user/account.json',
     }, callback);
   }
 
   userBadges(params, callback) {
     return this.get({
-      url: 'market/user-badges:' + params.username + '.json',
+      url: '/market/user-badges:' + params.username + '.json',
     }, callback);
   }
 
   authorItemsBySite(params, callback) {
     return this.get({
-      url: 'market/user-items-by-site:' + params.username + '.json',
+      url: '/market/user-items-by-site:' + params.username + '.json',
     }, callback);
   }
 
@@ -76,13 +85,13 @@ class EnvatoApi {
     const { username, site } = params;
 
     return this.get({
-      url: `market/new-files-from-user:${username},${site}.json`,
+      url: `/market/new-files-from-user:${username},${site}.json`,
     }, callback);
   }
 
   authorEarningsSales(callback) {
     return this.get({
-      url: 'market/private/user/earnings-and-sales-by-month.json',
+      url: '/market/private/user/earnings-and-sales-by-month.json',
     }, callback);
   }
 

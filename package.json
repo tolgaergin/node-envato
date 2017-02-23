@@ -20,8 +20,5 @@
   "dependencies": {
     "axios": "^0.15.3",
     "querystring": "^0.2.0"
-  },
-  "devDependencies": {
-    "nodemon": "^1.11.0"
   }
 }
